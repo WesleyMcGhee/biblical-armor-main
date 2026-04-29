@@ -1,39 +1,18 @@
 import Link from "next/link";
 import { Header } from "@/lib/components/Header.component";
 import { ArrowLeft, Calendar } from "lucide-react";
+import { db } from "@/lib/db";
+import { articles } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
 
-const articles = [
-  {
-    id: 1,
-    title: "Why Apologetics Matters in Modern Christianity",
-    excerpt: "Exploring the importance of defending our faith in an age of skepticism and doubt.",
-    date: "March 15, 2026",
-    category: "Foundations",
-  },
-  {
-    id: 2,
-    title: "The Historical Evidence for the Resurrection",
-    excerpt: "A look at the historical facts that support the resurrection of Jesus Christ.",
-    date: "March 10, 2026",
-    category: "Evidence",
-  },
-  {
-    id: 3,
-    title: "Answering Common Objections to Scripture",
-    excerpt: "Practical responses to frequently asked questions about biblical reliability.",
-    date: "March 5, 2026",
-    category: "FAQ",
-  },
-  {
-    id: 4,
-    title: "The Fine-Tuning Argument Explained",
-    excerpt: "Understanding the cosmological argument and what it reveals about creation.",
-    date: "February 28, 2026",
-    category: "Science & Faith",
-  },
-];
+export const dynamic = "force-dynamic";
 
-export default function ArticlesPage() {
+export default async function ArticlesPage() {
+  const publishedArticles = await db.query.articles.findMany({
+    where: eq(articles.published, true),
+    orderBy: (articles, { desc }) => [desc(articles.createdAt)],
+  });
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -59,39 +38,46 @@ export default function ArticlesPage() {
 
         <section className="py-16 md:py-24">
           <div className="container mx-auto px-4 md:px-6">
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {articles.map((post) => (
-                <article
-                  key={post.id}
-                  className="bg-background border border-border rounded-lg overflow-hidden hover:border-accent transition-colors group"
-                >
-                  <div className="p-6">
-                    <div className="flex items-center gap-2 mb-3">
-                      <span className="text-xs font-medium px-2 py-1 bg-accent/20 text-foreground rounded">
-                        {post.category}
-                      </span>
-                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
+            {publishedArticles.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-muted-foreground text-lg">
+                  No articles published yet. Check back soon!
+                </p>
+              </div>
+            ) : (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {publishedArticles.map((article) => (
+                  <article
+                    key={article.id}
+                    className="bg-background border border-border rounded-lg overflow-hidden hover:border-accent transition-colors group"
+                  >
+                    <div className="p-6">
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground mb-3">
                         <Calendar className="h-3 w-3" />
-                        {post.date}
+                        {new Date(article.createdAt).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
                       </div>
+                      <h2 className="text-xl font-semibold text-foreground mb-3 group-hover:text-primary transition-colors">
+                        {article.title}
+                      </h2>
+                      <p className="text-muted-foreground text-sm mb-4">
+                        {article.excerpt}
+                      </p>
+                      <Link
+                        href={`/articles/${article.slug}`}
+                        className="inline-flex items-center text-sm font-medium text-primary hover:text-accent transition-colors"
+                      >
+                        Read more
+                        <span className="ml-1 group-hover:translate-x-1 transition-transform">→</span>
+                      </Link>
                     </div>
-                    <h2 className="text-xl font-semibold text-foreground mb-3 group-hover:text-primary transition-colors">
-                      {post.title}
-                    </h2>
-                    <p className="text-muted-foreground text-sm mb-4">
-                      {post.excerpt}
-                    </p>
-                    <Link
-                      href={`/articles/${post.id}`}
-                      className="inline-flex items-center text-sm font-medium text-primary hover:text-accent transition-colors"
-                    >
-                      Read more
-                      <span className="ml-1 group-hover:translate-x-1 transition-transform">→</span>
-                    </Link>
-                  </div>
-                </article>
-              ))}
-            </div>
+                  </article>
+                ))}
+              </div>
+            )}
           </div>
         </section>
       </main>
