@@ -60,7 +60,10 @@ export async function POST(
       })
       .returning();
 
-    return NextResponse.json(newComment);
+    return NextResponse.json({
+      ...newComment,
+      authorName: session.user.name,
+    });
   } catch (error) {
     console.error("Create comment error:", error);
     return NextResponse.json(

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Header } from "@/lib/components/Header.component";
 import { Shield, BookOpen, Video, MessageCircle } from "lucide-react";
 
@@ -98,24 +99,28 @@ export default function HomePage() {
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div>
                 <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
-                  Your Logo Here
+                  Standing Firm in the Truth
                 </h2>
                 <p className="text-muted-foreground mb-6">
-                  Replace this placeholder with your ministry logo. Simply add your 
-                  image to the public folder and update the Header component.
+                  Biblical Armor Apologetics exists to help believers put on the full
+                  armor of God — equipped with Scripture, sound reasoning, and a
+                  readiness to defend the hope within them.
                 </p>
-                <p className="text-sm text-muted-foreground">
-                  Recommended: Add a logo file named <code className="bg-muted px-2 py-1 rounded">logo.png</code> or{" "}
-                  <code className="bg-muted px-2 py-1 rounded">logo.svg</code> to the public folder.
-                </p>
+                <Link
+                  href="/about"
+                  className="inline-flex items-center justify-center px-6 py-3 border border-border text-foreground font-semibold rounded hover:border-accent transition-colors"
+                >
+                  Read Our Story
+                </Link>
               </div>
-              <div className="bg-muted rounded-lg p-12 flex items-center justify-center min-h-[200px] border-2 border-dashed border-border">
-                <div className="text-center">
-                  <div className="w-20 h-20 bg-primary/20 rounded-lg flex items-center justify-center mx-auto mb-4">
-                    <span className="text-3xl font-bold text-primary">BA</span>
-                  </div>
-                  <p className="text-sm text-muted-foreground">Logo Placeholder</p>
-                </div>
+              <div className="bg-primary rounded-lg p-12 flex items-center justify-center min-h-[200px]">
+                <Image
+                  src="/BAA-Logo-Full.png"
+                  alt="Biblical Armor Apologetics"
+                  width={447}
+                  height={429}
+                  className="w-full max-w-xs h-auto"
+                />
               </div>
             </div>
           </div>
