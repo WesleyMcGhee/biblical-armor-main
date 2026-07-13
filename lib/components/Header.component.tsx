@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { Menu, X, ChevronDown, User, Settings, LogOut } from "lucide-react";
@@ -20,9 +21,15 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <nav className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="relative w-10 h-10 bg-primary rounded flex items-center justify-center overflow-hidden group">
-            <span className="text-primary-foreground font-bold text-lg">BA</span>
+        <Link href="/" className="flex items-center gap-2 group">
+          <div className="relative w-10 h-10 rounded overflow-hidden">
+            <Image
+              src="/BAA-Logo-Icon.png"
+              alt="Biblical Armor Apologetics"
+              fill
+              className="object-cover"
+              priority
+            />
             <div className="absolute inset-0 bg-accent opacity-0 group-hover:opacity-20 transition-opacity" />
           </div>
           <span className="hidden sm:inline-block font-semibold text-foreground tracking-tight">

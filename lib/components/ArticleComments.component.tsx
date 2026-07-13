@@ -19,12 +19,17 @@ export function ArticleComments({ articleId }: { articleId: string }) {
   const [newComment, setNewComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
+    setLoading(true);
+    setComments([]);
+
     fetch(`/api/comments/${articleId}`)
       .then((r) => r.ok ? r.json() : [])
       .then(setComments)
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }, [articleId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -54,6 +59,12 @@ export function ArticleComments({ articleId }: { articleId: string }) {
       setIsSubmitting(false);
     }
   };
+
+  if (loading) return (
+    <div className="max-w-3xl mx-auto mt-16 pt-8 border-t border-border flex items-center justify-center py-8">
+      <Loader2 className="h-6 w-6 animate-spin text-primary" />
+    </div>
+  );
 
   return (
     <div className="max-w-3xl mx-auto mt-16 pt-8 border-t border-border">
@@ -100,7 +111,9 @@ export function ArticleComments({ articleId }: { articleId: string }) {
       )}
 
       <div className="space-y-6">
-        {comments.map((comment) => (
+        {comments.map((comment) => { 
+          console.log(comment);
+          return (
           <div
             key={comment.id}
             className="bg-background border border-border rounded-lg p-4"
@@ -125,7 +138,7 @@ export function ArticleComments({ articleId }: { articleId: string }) {
             </div>
             <p className="text-muted-foreground pl-11">{comment.content}</p>
           </div>
-        ))}
+        )})}
 
         {comments.length === 0 && (
           <p className="text-muted-foreground text-center py-8">
